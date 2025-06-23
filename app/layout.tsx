@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/shared/Header";
+import { ReduxProvider } from "@/components/providers/provider";
 
 export const metadata: Metadata = {
   title: "EStoreFront",
@@ -15,8 +16,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex min-h-full flex-col bg-white">
-        <Header />
-        <main className="flex-grow container mx-auto px-4 py-8">{children}</main>
+        <ReduxProvider>
+          <Header />
+          <main className="flex-grow container mx-auto px-4 py-8">
+            {children}
+          </main>
+        </ReduxProvider>
       </body>
     </html>
   );
