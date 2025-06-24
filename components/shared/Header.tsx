@@ -1,23 +1,29 @@
-"use client"
+"use client";
 
-import React, { useState } from "react"
-import Link from "next/link"
-import { ShoppingCart, Heart, User, Menu, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import React, { useState } from "react";
+import Link from "next/link";
+import { ShoppingCart, Heart, User, Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { useAppSelector } from "@/lib/hooks";
 
 export default function Header() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const cartItemCount = useAppSelector((state) => state.cart.itemCount);
+  const wishlistCount = useAppSelector((state) => state.wishlist.items.length);
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen((prev) => !prev)
-  }
+    setIsMobileMenuOpen((prev) => !prev);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 shadow-sm">
       <div className="container flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-4 sm:gap-6">
           <Link href="/" className="flex items-center space-x-2">
-            <span className="font-extrabold text-lg sm:text-xl tracking-tight">EStoreFront</span>
+            <span className="font-extrabold text-lg sm:text-xl tracking-tight">
+              EStoreFront
+            </span>
           </Link>
 
           <nav className="hidden md:flex items-center space-x-4 sm:space-x-6 text-sm font-medium">
@@ -29,19 +35,41 @@ export default function Header() {
 
         <div className="flex items-center gap-2 sm:gap-3">
           <Link href="/wishlist">
-            <Button variant="ghost" size="icon" className="hover:bg-accent/50 transition-colors">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative hover:bg-accent/50 transition-colors"
+            >
               <Heart className="h-4 w-4 sm:h-5 sm:w-5" />
+              {wishlistCount > 0 && (
+                <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                  {wishlistCount}
+                </Badge>
+              )}
             </Button>
           </Link>
 
           <Link href="/cart">
-            <Button variant="ghost" size="icon" className="hover:bg-accent/50 transition-colors">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative hover:bg-accent/50 transition-colors"
+            >
               <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
+              {cartItemCount > 0 && (
+                <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                  {cartItemCount}
+                </Badge>
+              )}
             </Button>
           </Link>
 
           <Link href="/auth/login">
-            <Button variant="ghost" size="icon" className="hover:bg-accent/50 transition-colors">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hover:bg-accent/50 transition-colors"
+            >
               <User className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
           </Link>
@@ -52,7 +80,11 @@ export default function Header() {
             className="md:hidden hover:bg-accent/50 transition-colors"
             onClick={toggleMobileMenu}
           >
-            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {isMobileMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
           </Button>
         </div>
       </div>
@@ -60,7 +92,9 @@ export default function Header() {
       {/* Mobile Menu */}
       <div
         className={`md:hidden bg-background border-b transition-all duration-300 ease-in-out ${
-          isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0 overflow-hidden"
+          isMobileMenuOpen
+            ? "max-h-96 opacity-100"
+            : "max-h-0 opacity-0 overflow-hidden"
         }`}
       >
         <nav className="container flex flex-col space-y-4 px-4 sm:px-6 py-4">
@@ -95,5 +129,5 @@ export default function Header() {
         </nav>
       </div>
     </header>
-  )
+  );
 }

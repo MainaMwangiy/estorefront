@@ -32,3 +32,33 @@ export async function getProduct(id: number): Promise<Product> {
     throw new Error("Failed to fetch product")
   }
 }
+
+export async function getCategories(): Promise<string[]> {
+  try {
+    const response = await axios.get(`${API_BASE}/products/categories`)
+
+    if (!response) {
+      throw new Error(`HTTP error! status: ${response}`)
+    }
+
+    return await response.data;
+  } catch (error) {
+    console.error("Failed to fetch categories:", error)
+    throw new Error("Failed to fetch categories")
+  }
+}
+
+export async function getProductsByCategory(category: string): Promise<Product[]> {
+  try {
+    const response = await axios.get(`${API_BASE}/products/category/${encodeURIComponent(category)}`)
+
+    if (!response) {
+      throw new Error(`HTTP error! status: ${response}`)
+    }
+
+    return await response.data;
+  } catch (error) {
+    console.error(`Failed to fetch products for category ${category}:`, error)
+    throw new Error("Failed to fetch products by category")
+  }
+}

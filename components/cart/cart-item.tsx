@@ -4,14 +4,10 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Trash2, Plus, Minus } from "lucide-react";
-import type { CartItem as CartItemType } from "@/types";
 import { useAppDispatch } from "@/lib/hooks";
 import { updateQuantity, removeFromCart } from "@/lib/reducers/cart/cart";
 import { useState } from "react";
-
-interface CartItemProps {
-  item: CartItemType;
-}
+import { CartItemProps } from "@/types";
 
 export function CartItem({ item }: CartItemProps) {
   const dispatch = useAppDispatch();
