@@ -18,7 +18,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 shadow-sm">
-      <div className="container flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="relative w-full h-16 px-4 sm:px-6 lg:px-8 flex items-center">
         <div className="flex items-center gap-4 sm:gap-6">
           <Link href="/" className="flex items-center space-x-2">
             <span className="font-extrabold text-lg sm:text-xl tracking-tight">
@@ -33,7 +33,7 @@ export default function Header() {
           </nav>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 sm:gap-3">
           <Link href="/wishlist">
             <Button
               variant="ghost"
@@ -97,7 +97,7 @@ export default function Header() {
             : "max-h-0 opacity-0 overflow-hidden"
         }`}
       >
-        <nav className="container flex flex-col space-y-4 px-4 sm:px-6 py-4">
+        <nav className="w-full px-4 sm:px-6 py-4 flex flex-col space-y-4">
           <Link
             href="/"
             className="text-base sm:text-lg font-medium hover:text-primary transition-colors"

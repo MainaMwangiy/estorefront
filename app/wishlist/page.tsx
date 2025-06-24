@@ -7,7 +7,7 @@ import { Heart, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 export default function WishlistPage() {
-  const wishlistItems = useAppSelector((state) => state.wishlist.items);
+  const wishlistItems = useAppSelector((state) => state.wishlist.items) || [];
 
   if (wishlistItems.length === 0) {
     return (
@@ -45,7 +45,7 @@ export default function WishlistPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {wishlistItems.map((product) => (
+        {wishlistItems?.map((product) => (
           <ProductCard key={product.id} index={product.id} product={product} />
         ))}
       </div>

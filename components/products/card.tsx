@@ -83,7 +83,7 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
               />
             </motion.button>
 
-            <Badge className="absolute top-3 left-3 bg-primary/90 backdrop-blur-sm">
+            <Badge className="absolute top-3 left-3 bg-primary/90 backdrop-blur-sm rounded-full text-white px-2 py-2 text-xs text-center">
               {product.category}
             </Badge>
 
