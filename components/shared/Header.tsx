@@ -21,7 +21,7 @@ export default function Header() {
       <div className="relative w-full h-16 px-4 sm:px-6 lg:px-8 flex items-center">
         <div className="flex items-center gap-4 sm:gap-6">
           <Link href="/" className="flex items-center space-x-2">
-            <span className="font-extrabold text-lg sm:text-xl tracking-tight">
+            <span className="font-extrabold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-green-600 to-blue-700 bg-clip-text text-transparent">
               EStoreFront
             </span>
           </Link>

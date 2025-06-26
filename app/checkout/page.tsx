@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation"; // Add useRouter
 import {
   useStripe,
   useElements,
@@ -21,14 +21,22 @@ const convertToSubcurrency = (amount: number): number => {
 
 export default function Checkout() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const stripe = useStripe();
   const elements = useElements();
   const [clientSecret, setClientSecret] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const { total, itemCount } = useAppSelector((state) => state.cart);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   const amount = Number(searchParams.get("amount")) || total * 1.08;
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push("/auth/login");
+    }
+  }, [isAuthenticated, router]);
 
   useEffect(() => {
     const fetchClientSecret = async () => {
@@ -55,12 +63,12 @@ export default function Checkout() {
       }
     };
 
-    if (amount > 0) {
+    if (isAuthenticated && amount > 0) {
       fetchClientSecret();
-    } else {
+    } else if (amount <= 0) {
       setErrorMessage("Invalid cart total. Please return to cart.");
     }
-  }, [amount]);
+  }, [amount, isAuthenticated]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -95,6 +103,21 @@ export default function Checkout() {
 
     setLoading(false);
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-center">
+          <div
+            className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"
+            role="status"
+          >
+            <span className="sr-only">Redirecting to login...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!clientSecret || !stripe || !elements) {
     return (
@@ -141,7 +164,7 @@ export default function Checkout() {
                 <Button
                   type="submit"
                   disabled={!stripe || loading}
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-500 hover:from-blue-700 hover:to-purple-600 text-white transition-colors duration-200 "
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-500 hover:from-blue-700 hover:to-purple-600 text-white transition-colors duration-200"
                   size="lg"
                 >
                   {loading ? "Processing..." : `Pay $${amount}`}

@@ -38,7 +38,11 @@ export default function WishlistPage() {
     <div className="container mx-auto px-4 py-6 sm:py-8">
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
         <Link href="/">
-          <Button variant="ghost" size="sm" className="text-sm sm:text-base">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="flex items-center gap-2 rounded-full border-2 border-blue-600 dark:border-blue-400 bg-white/50 dark:bg-gray-800/50 px-4 py-2 text-blue-600 dark:text-blue-300 font-semibold shadow-sm hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all duration-300 ease-in-out hover:shadow-md"
+          >
             <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
             Continue Shopping
           </Button>
