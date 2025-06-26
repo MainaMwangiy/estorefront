@@ -17,6 +17,7 @@ import { registerSuccess, loginFailure } from "@/lib/reducers/auth/auth";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { User } from "@/types";
 
 export default function SignUp() {
   const [name, setName] = useState("");
@@ -40,7 +41,7 @@ export default function SignUp() {
     try {
       // Mock user registration
       const users = JSON.parse(localStorage.getItem("users") || "[]");
-      if (users.find((u: any) => u.email === email)) {
+      if (users.find((u: User) => u.email === email)) {
         throw new Error("Email already exists");
       }
 
@@ -63,9 +64,18 @@ export default function SignUp() {
 
       toast.success("Account created successfully!");
       router.push("/auth/login");
-    } catch (error: any) {
-      dispatch(loginFailure(error.message || "Registration failed"));
-      toast.error(error.message || "Registration failed");
+    } catch (error: unknown) {
+      let errorMessage = "An unexpected error occurred";
+      if (
+        error &&
+        typeof error === "object" &&
+        "message" in error &&
+        typeof (error as Record<string, unknown>).message === "string"
+      ) {
+        errorMessage = (error as { message: string }).message;
+      }
+      dispatch(loginFailure(errorMessage));
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

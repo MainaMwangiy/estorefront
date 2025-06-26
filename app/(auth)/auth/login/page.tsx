@@ -17,6 +17,7 @@ import { loginSuccess, loginFailure } from "@/lib/reducers/auth/auth";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { User } from "@/types";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -33,7 +34,7 @@ export default function Login() {
       // Check credentials against stored users
       const users = JSON.parse(localStorage.getItem("users") || "[]");
       const user = users.find(
-        (u: any) => u.email === email && u.password === password
+        (u: User) => u.email === email && u.password === password
       );
 
       if (!user) {

@@ -36,7 +36,7 @@ const wishlistSlice = createSlice({
     clearWishlist: (state) => {
       state.items = [];
     },
-    loadWishlistFromStorage: (state, action: PayloadAction<WishlistStoragePayload[]>) => {
+    loadWishlistFromStorage: (state, action: PayloadAction<WishlistStoragePayload>) => {
       debugger;
       const { items = [], isLoading = false } = action.payload || {};
       state.items = [...items]; 
