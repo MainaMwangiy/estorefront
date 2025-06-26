@@ -16,6 +16,7 @@ import {
 } from "@/components/animations/stagger-container";
 import { ProductFiltersComponent } from "@/components/products/filters";
 import { ProductCard } from "@/components/products/card";
+import { ProductsPageSkeleton } from "@/components/skeletons/products-list";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -197,22 +198,7 @@ export default function ProductsPage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen">
-        <div className="w-full px-4 py-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="animate-pulse">
-                <div className="bg-gray-200 aspect-square rounded-lg mb-4"></div>
-                <div className="bg-gray-200 h-4 rounded mb-2"></div>
-                <div className="bg-gray-200 h-4 rounded w-2/3 mb-2"></div>
-                <div className="bg-gray-200 h-8 rounded w-full"></div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
+    return <ProductsPageSkeleton />;
   }
 
   return (
