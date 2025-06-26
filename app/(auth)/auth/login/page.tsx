@@ -95,7 +95,11 @@ export default function Login() {
                 />
               </div>
 
-              <Button type="submit" disabled={isLoading} className="w-full">
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white transition-colors duration-200"
+              >
                 {isLoading ? "Signing in..." : "Sign In"}
               </Button>
             </form>

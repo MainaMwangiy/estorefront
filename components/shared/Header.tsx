@@ -42,7 +42,7 @@ export default function Header() {
             >
               <Heart className="h-4 w-4 sm:h-5 sm:w-5" />
               {wishlistCount > 0 && (
-                <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs font-semibold bg-primary text-primary-foreground rounded-full shadow-md transform transition-transform hover:scale-110">
                   {wishlistCount}
                 </Badge>
               )}
@@ -57,7 +57,7 @@ export default function Header() {
             >
               <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
               {cartItemCount > 0 && (
-                <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs font-semibold bg-primary text-primary-foreground rounded-full shadow-md transform transition-transform hover:scale-110">
                   {cartItemCount}
                 </Badge>
               )}
@@ -89,7 +89,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       <div
         className={`md:hidden bg-background border-b transition-all duration-300 ease-in-out ${
           isMobileMenuOpen

@@ -41,7 +41,10 @@ export default function Cart() {
             Looks like you havent added any items to your cart yet.
           </p>
           <Link href="/">
-            <Button size="sm" className="text-sm sm:text-base">
+            <Button
+              size="sm"
+              className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 text-white transition-colors duration-200"
+            >
               <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
               Continue Shopping
             </Button>
@@ -118,7 +121,7 @@ export default function Cart() {
               <Button
                 onClick={handleCheckout}
                 disabled={isCheckingOut}
-                className="w-full text-sm sm:text-base"
+                className="w-full text-sm sm:text-base bg-gradient-to-r from-blue-600 to-pink-500 hover:from-blue-700 hover:to-pink-600 text-white transition-colors duration-200"
                 size="lg"
               >
                 {isCheckingOut ? "Processing..." : "Proceed to Checkout"}

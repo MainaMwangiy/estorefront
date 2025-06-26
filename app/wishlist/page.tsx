@@ -21,7 +21,10 @@ export default function WishlistPage() {
             Save items you love to your wishlist and shop them later.
           </p>
           <Link href="/">
-            <Button size="sm" className="text-sm sm:text-base">
+            <Button
+              size="sm"
+              className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 text-white transition-colors duration-200"
+            >
               <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
               Continue Shopping
             </Button>

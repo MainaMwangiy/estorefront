@@ -141,7 +141,7 @@ export default function Checkout() {
                 <Button
                   type="submit"
                   disabled={!stripe || loading}
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-500 hover:from-blue-700 hover:to-purple-600 text-white transition-colors duration-200 "
                   size="lg"
                 >
                   {loading ? "Processing..." : `Pay $${amount}`}

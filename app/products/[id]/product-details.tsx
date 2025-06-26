@@ -191,7 +191,7 @@ export function ProductDetails({ product }: ProductDetailClientProps) {
                 <Button
                   onClick={handleAddToCart}
                   disabled={isAddingToCart}
-                  className="w-full h-14 text-lg font-semibold"
+                  className="w-full h-14 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-500 text-white"
                   size="lg"
                 >
                   <motion.div
