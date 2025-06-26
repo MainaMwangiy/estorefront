@@ -30,6 +30,7 @@ export default function ProductsPage() {
   const searchParams = useSearchParams();
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const searchFromUrl = searchParams?.get("search");
@@ -177,10 +178,16 @@ export default function ProductsPage() {
     };
   }, [viewMode, isLoadingMore, loadMoreProducts]);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFilters((prev) => ({ ...prev, search: searchQuery }));
-    setCurrentPage(1);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    debounceRef.current = setTimeout(() => {
+      setFilters((prev) => ({ ...prev, search: value }));
+      setCurrentPage(1);
+    }, 300);
   };
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -223,21 +230,16 @@ export default function ProductsPage() {
                   {filteredProducts.length} products found
                 </p>
               </div>
-              <form
-                onSubmit={handleSearch}
-                className="flex-1 max-w-md w-full sm:w-auto"
-              >
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                  <Input
-                    type="search"
-                    placeholder="Search products..."
-                    className="pl-10 w-full text-sm sm:text-base transition-all duration-200 focus:ring-2 focus:ring-blue-600/20"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-              </form>
+              <div className="relative flex-1 max-w-md w-full">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <Input
+                  type="search"
+                  placeholder="Search products..."
+                  className="pl-10 pr-10 w-full text-sm sm:text-base transition-all duration-200 focus:ring-2 focus:ring-blue-600/20"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                />
+              </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
               <span className="text-xs sm:text-sm text-muted-foreground">
