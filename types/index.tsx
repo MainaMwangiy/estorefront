@@ -93,10 +93,6 @@ export interface CartAnimationProps {
   onComplete?: () => void;
 }
 
-export interface CartItemProps {
-  item: CartItem;
-}
-
 export interface ProductFiltersProps {
   filters: ProductFilters;
   onFiltersChange: (filters: ProductFilters) => void;

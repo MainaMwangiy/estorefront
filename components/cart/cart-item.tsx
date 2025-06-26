@@ -7,9 +7,9 @@ import { Trash2, Plus, Minus } from "lucide-react";
 import { useAppDispatch } from "@/lib/hooks";
 import { updateQuantity, removeFromCart } from "@/lib/reducers/cart/cart";
 import { useState } from "react";
-import { CartItemProps } from "@/types";
+import { CartItem as CartItemProps } from "@/types";
 
-export function CartItem({ item }: CartItemProps) {
+export function CartItem({ item }: { item: CartItemProps }) {
   const dispatch = useAppDispatch();
   const [quantity, setQuantity] = useState(item.quantity);
 
