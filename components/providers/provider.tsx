@@ -24,7 +24,7 @@ const InitializeStore = () => {
     const savedWishlist = localStorage.getItem("wishlist");
     if (savedWishlist) {
       try {
-        const wishlistData = JSON.parse(savedWishlist);
+        const wishlistData = JSON.parse(savedWishlist) || [];
         store.dispatch(loadWishlistFromStorage(wishlistData));
       } catch (error) {
         console.error("Failed to load wishlist from storage:", error);
