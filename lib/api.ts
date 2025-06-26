@@ -18,7 +18,7 @@ export async function getProducts(): Promise<Product[]> {
   }
 }
 
-export async function getProduct(id: number): Promise<Product> {
+export async function getProduct(id: string): Promise<Product> {
   try {
     const response = await axios.get(`${API_BASE}/products/${id}`)
 

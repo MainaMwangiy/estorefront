@@ -6,7 +6,7 @@ import { ProductPageProps } from "@/types";
 export async function generateStaticParams() {
   try {
     const products = await getProducts();
-    return products.slice(0, 20).map((product) => ({
+    return products.map((product) => ({
       id: product.id.toString(),
     }));
   } catch (error) {
@@ -18,7 +18,7 @@ export async function generateStaticParams() {
 export default async function ProductPage({ params }: ProductPageProps) {
   try {
     const { id } = await params;
-    const product = await getProduct(Number.parseInt(id));
+    const product = await getProduct(id);
     return <ProductDetails product={product} />;
   } catch {
     notFound();

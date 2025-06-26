@@ -26,7 +26,7 @@ export default function ProductsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(4);
+  const [itemsPerPage] = useState(8);
   const searchParams = useSearchParams();
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
@@ -211,10 +211,10 @@ export default function ProductsPage() {
   return (
     <div className="min-h-screen">
       {/* Products Section */}
-      <section className="w-full px-4 py-8">
+      <section className="w-full px-4 py-1">
         <FadeIn>
-          <div className="mb-6">
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-6">
+          <div className="mb-2">
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-1">
               <div>
                 <h2 className="text-xl sm:text-2xl font-bold mb-2">
                   Our Products
@@ -321,7 +321,11 @@ export default function ProductsPage() {
                 >
                   {displayedProducts.map((product) => (
                     <StaggerItem key={product.id}>
-                      <ProductCard product={product} index={0} />
+                      <ProductCard
+                        product={product}
+                        index={0}
+                        viewMode={viewMode}
+                      />
                     </StaggerItem>
                   ))}
                 </StaggerContainer>

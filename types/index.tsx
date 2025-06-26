@@ -101,4 +101,5 @@ export interface ProductFiltersProps {
 export interface ProductCardProps {
   product: Product;
   index: number;
+  viewMode?: "grid" | "list";
 }
