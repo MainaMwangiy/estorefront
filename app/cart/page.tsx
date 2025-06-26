@@ -8,12 +8,14 @@ import { Separator } from "@/components/ui/separator";
 import { clearCart } from "@/lib/reducers/cart/cart";
 import { ShoppingBag, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
 export default function Cart() {
   const { items, total, itemCount } = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   const handleClearCart = () => {
@@ -23,12 +25,9 @@ export default function Cart() {
 
   const handleCheckout = () => {
     setIsCheckingOut(true);
-    // Simulate checkout process
-    setTimeout(() => {
-      toast.success("Order placed successfully!");
-      dispatch(clearCart());
-      setIsCheckingOut(false);
-    }, 2000);
+    // Navigate to checkout page with total amount
+    router.push(`/checkout?amount=${(total * 1.08).toFixed(2)}`);
+    setIsCheckingOut(false);
   };
 
   if (items.length === 0) {
@@ -38,7 +37,7 @@ export default function Cart() {
           <ShoppingBag className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
           <h1 className="text-2xl font-bold mb-2">Your cart is empty</h1>
           <p className="text-muted-foreground mb-6">
-            Looks like you haven't added any items to your cart yet.
+            {" Looks like you havent added any items to your cart yet."}
           </p>
           <Link href="/">
             <Button>
@@ -75,7 +74,7 @@ export default function Cart() {
             </CardHeader>
             <CardContent className="p-0">
               {items.map((item) => (
-                <div key={item.id} className="px-6">
+                <div key={item.id} className="px-Dims">
                   <CartItem item={item} />
                 </div>
               ))}
