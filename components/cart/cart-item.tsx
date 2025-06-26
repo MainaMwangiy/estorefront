@@ -25,8 +25,8 @@ export function CartItem({ item }: CartItemProps) {
   };
 
   return (
-    <div className="flex items-center space-x-4 py-4 border-b">
-      <div className="relative h-16 w-16 flex-shrink-0">
+    <div className="flex items-center space-x-2 sm:space-x-4 py-3 sm:py-4 border-b">
+      <div className="relative h-12 w-12 sm:h-16 sm:w-16 flex-shrink-0">
         <Image
           src={item.image || "/placeholder.svg"}
           alt={item.title}
@@ -36,18 +36,22 @@ export function CartItem({ item }: CartItemProps) {
       </div>
 
       <div className="flex-1 min-w-0">
-        <h3 className="text-sm font-medium line-clamp-2">{item.title}</h3>
-        <p className="text-sm text-muted-foreground capitalize">
+        <h3 className="text-xs sm:text-sm font-medium line-clamp-2">
+          {item.title}
+        </h3>
+        <p className="text-xs sm:text-sm text-muted-foreground capitalize">
           {item.category}
         </p>
-        <p className="text-sm font-semibold">${item.price.toFixed(2)}</p>
+        <p className="text-xs sm:text-sm font-semibold">
+          ${item.price.toFixed(2)}
+        </p>
       </div>
 
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-1 sm:space-x-2">
         <Button
           variant="outline"
           size="icon"
-          className="h-8 w-8"
+          className="h-7 w-7 sm:h-8 sm:w-8"
           onClick={() => handleQuantityChange(quantity - 1)}
           disabled={quantity <= 1}
         >
@@ -60,14 +64,14 @@ export function CartItem({ item }: CartItemProps) {
           onChange={(e) =>
             handleQuantityChange(Number.parseInt(e.target.value) || 1)
           }
-          className="w-16 h-8 text-center"
+          className="w-12 sm:w-16 h-7 sm:h-8 text-xs sm:text-sm text-center"
           min="1"
         />
 
         <Button
           variant="outline"
           size="icon"
-          className="h-8 w-8"
+          className="h-7 w-7 sm:h-8 sm:w-8"
           onClick={() => handleQuantityChange(quantity + 1)}
         >
           <Plus className="h-3 w-3" />
@@ -75,7 +79,7 @@ export function CartItem({ item }: CartItemProps) {
       </div>
 
       <div className="text-right">
-        <p className="text-sm font-semibold">
+        <p className="text-xs sm:text-sm font-semibold">
           ${(item.price * item.quantity).toFixed(2)}
         </p>
         <Button
@@ -84,7 +88,7 @@ export function CartItem({ item }: CartItemProps) {
           onClick={handleRemove}
           className="text-red-500 hover:text-red-700 p-1"
         >
-          <Trash2 className="h-4 w-4" />
+          <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
         </Button>
       </div>
     </div>

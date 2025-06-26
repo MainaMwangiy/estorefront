@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import type { Product, ProductFilters } from "@/types";
 import { getProducts } from "@/lib/api";
 import { Button } from "@/components/ui/button";
@@ -19,13 +19,17 @@ import { ProductCard } from "@/components/products/card";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [displayedProducts, setDisplayedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [filters, setFilters] = useState<ProductFilters>({});
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(12);
+  const [itemsPerPage] = useState(5);
   const searchParams = useSearchParams();
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const searchFromUrl = searchParams?.get("search");
@@ -42,8 +46,12 @@ export default function ProductsPage() {
   }, [searchParams]);
 
   useEffect(() => {
+    setLoading(true);
     getProducts()
-      .then(setProducts)
+      .then((data) => {
+        setProducts(data);
+        setDisplayedProducts(data.slice(0, itemsPerPage));
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
@@ -105,12 +113,69 @@ export default function ProductsPage() {
     return filtered;
   }, [products, filters]);
 
-  // Pagination
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-  const paginatedProducts = filteredProducts.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  useEffect(() => {
+    if (viewMode === "list") {
+      setDisplayedProducts(
+        filteredProducts.slice(0, currentPage * itemsPerPage)
+      );
+    } else {
+      setDisplayedProducts(
+        filteredProducts.slice(
+          (currentPage - 1) * itemsPerPage,
+          currentPage * itemsPerPage
+        )
+      );
+    }
+  }, [filteredProducts, currentPage, viewMode, itemsPerPage]);
+
+  const loadMoreProducts = useCallback(() => {
+    if (isLoadingMore || viewMode !== "list") return;
+    if (displayedProducts.length >= filteredProducts.length) {
+      if (loadMoreRef.current && observerRef.current) {
+        observerRef.current.unobserve(loadMoreRef.current);
+      }
+      return;
+    }
+
+    setIsLoadingMore(true);
+    setTimeout(() => {
+      setCurrentPage((prev) => prev + 1);
+      setIsLoadingMore(false);
+    }, 500);
+  }, [
+    isLoadingMore,
+    viewMode,
+    displayedProducts.length,
+    filteredProducts.length,
+  ]);
+
+  useEffect(() => {
+    if (viewMode !== "list") {
+      if (observerRef.current && loadMoreRef.current) {
+        observerRef.current.unobserve(loadMoreRef.current);
+      }
+      return;
+    }
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isLoadingMore) {
+          loadMoreProducts();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loadMoreRef.current) {
+      observerRef.current.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (loadMoreRef.current && observerRef.current) {
+        observerRef.current.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [viewMode, isLoadingMore, loadMoreProducts]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,6 +183,7 @@ export default function ProductsPage() {
     setCurrentPage(1);
   };
 
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -147,30 +213,35 @@ export default function ProductsPage() {
       {/* Products Section */}
       <section className="w-full px-4 py-8">
         <FadeIn>
-          <div className="mb-8">
+          <div className="mb-6">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-bold mb-2">Our Products</h2>
-                <p className="text-muted-foreground">
+                <h2 className="text-xl sm:text-2xl font-bold mb-2">
+                  Our Products
+                </h2>
+                <p className="text-muted-foreground text-sm sm:text-base">
                   {filteredProducts.length} products found
                 </p>
               </div>
-              <form onSubmit={handleSearch} className="flex-1 max-w-md">
+              <form
+                onSubmit={handleSearch}
+                className="flex-1 max-w-md w-full sm:w-auto"
+              >
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <Input
                     type="search"
                     placeholder="Search products..."
-                    className="pl-10 transition-all duration-200 focus:ring-2 focus:ring-blue-600/20"
+                    className="pl-10 w-full text-sm sm:text-base transition-all duration-200 focus:ring-2 focus:ring-blue-600/20"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
               </form>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-              <span className="text-sm text-muted-foreground">
-                Showing {paginatedProducts.length} of {filteredProducts.length}{" "}
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+              <span className="text-xs sm:text-sm text-muted-foreground">
+                Showing {displayedProducts.length} of {filteredProducts.length}{" "}
                 products
               </span>
               <div className="flex items-center gap-2">
@@ -179,27 +250,31 @@ export default function ProductsPage() {
                     variant={viewMode === "grid" ? "default" : "ghost"}
                     size="sm"
                     onClick={() => setViewMode("grid")}
-                    className="h-8 w-8 p-0"
+                    className="h-7 w-7 sm:h-8 sm:w-8 p-0"
                   >
-                    <Grid className="h-4 w-4" />
+                    <Grid className="h-3 w-3 sm:h-4 sm:w-4" />
                   </Button>
                   <Button
                     variant={viewMode === "list" ? "default" : "ghost"}
                     size="sm"
                     onClick={() => setViewMode("list")}
-                    className="h-8 w-8 p-0"
+                    className="h-7 w-7 sm:h-8 sm:w-8 p-0"
                   >
-                    <List className="h-4 w-4" />
+                    <List className="h-3 w-3 sm:h-4 sm:w-4" />
                   </Button>
                 </div>
                 <Sheet>
                   <SheetTrigger asChild>
-                    <Button variant="outline" size="sm" className="lg:hidden">
-                      <Filter className="h-4 w-4 mr-2" />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="lg:hidden text-xs sm:text-sm"
+                    >
+                      <Filter className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                       Filters
                     </Button>
                   </SheetTrigger>
-                  <SheetContent side="left" className="w-80">
+                  <SheetContent side="left" className="w-64 sm:w-80">
                     <ProductFiltersComponent
                       filters={filters}
                       onFiltersChange={setFilters}
@@ -224,7 +299,7 @@ export default function ProductsPage() {
           </aside>
 
           <div className="flex-1">
-            {filteredProducts.length === 0 ? (
+            {displayedProducts.length === 0 ? (
               <FadeIn>
                 <div className="text-center py-12">
                   <p className="text-muted-foreground text-lg mb-4">
@@ -244,15 +319,14 @@ export default function ProductsPage() {
                       : "grid-cols-1"
                   }`}
                 >
-                  {paginatedProducts.map((product, index) => (
+                  {displayedProducts.map((product) => (
                     <StaggerItem key={product.id}>
-                      <ProductCard product={product} index={index} />
+                      <ProductCard product={product} index={0} />
                     </StaggerItem>
                   ))}
                 </StaggerContainer>
 
-                {/* Pagination */}
-                {totalPages > 1 && (
+                {viewMode === "grid" && totalPages > 1 && (
                   <FadeIn delay={0.5}>
                     <div className="flex justify-center items-center gap-2 mt-12">
                       <Button
@@ -293,6 +367,17 @@ export default function ProductsPage() {
                     </div>
                   </FadeIn>
                 )}
+                {viewMode === "list" &&
+                  displayedProducts.length < filteredProducts.length && (
+                    <div
+                      ref={loadMoreRef}
+                      className="h-10 flex justify-center items-center"
+                    >
+                      {isLoadingMore && (
+                        <div className="text-muted-foreground">Loading...</div>
+                      )}
+                    </div>
+                  )}
               </>
             )}
           </div>

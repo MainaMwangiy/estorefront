@@ -3,7 +3,7 @@
 import { useAppSelector, useAppDispatch } from "@/lib/hooks";
 import { CartItem } from "@/components/cart/cart-item";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { clearCart } from "@/lib/reducers/cart/cart";
 import { ShoppingBag, ArrowLeft } from "lucide-react";
@@ -25,23 +25,24 @@ export default function Cart() {
 
   const handleCheckout = () => {
     setIsCheckingOut(true);
-    // Navigate to checkout page with total amount
     router.push(`/checkout?amount=${(total * 1.08).toFixed(2)}`);
     setIsCheckingOut(false);
   };
 
   if (items.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-8 sm:py-16">
         <div className="text-center">
-          <ShoppingBag className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-          <h1 className="text-2xl font-bold mb-2">Your cart is empty</h1>
-          <p className="text-muted-foreground mb-6">
-            {" Looks like you havent added any items to your cart yet."}
+          <ShoppingBag className="h-12 w-12 sm:h-16 sm:w-16 mx-auto text-muted-foreground mb-4" />
+          <h1 className="text-xl sm:text-2xl font-bold mb-2">
+            Your cart is empty
+          </h1>
+          <p className="text-muted-foreground text-sm sm:text-base mb-4 sm:mb-6">
+            Looks like you havent added any items to your cart yet.
           </p>
           <Link href="/">
-            <Button>
-              <ArrowLeft className="h-4 w-4 mr-2" />
+            <Button size="sm" className="text-sm sm:text-base">
+              <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
               Continue Shopping
             </Button>
           </Link>
@@ -51,30 +52,37 @@ export default function Cart() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center gap-4 mb-8">
+    <div className="container mx-auto px-4 py-6 sm:py-8">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6 sm:mb-8">
         <Link href="/">
-          <Button variant="ghost" size="sm">
-            <ArrowLeft className="h-4 w-4 mr-2" />
+          <Button variant="ghost" size="sm" className="text-sm sm:text-base">
+            <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
             Continue Shopping
           </Button>
         </Link>
-        <h1 className="text-3xl font-bold">Shopping Cart</h1>
-        <span className="text-muted-foreground">({itemCount} items)</span>
+        <h1 className="text-2xl sm:text-3xl font-bold">Shopping Cart</h1>
+        <span className="text-muted-foreground text-sm sm:text-base">
+          ({itemCount} items)
+        </span>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
         <div className="lg:col-span-2">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Cart Items</CardTitle>
-              <Button variant="outline" size="sm" onClick={handleClearCart}>
+              <CardTitle className="text-lg sm:text-xl">Cart Items</CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleClearCart}
+                className="text-sm sm:text-base"
+              >
                 Clear Cart
               </Button>
             </CardHeader>
             <CardContent className="p-0">
               {items.map((item) => (
-                <div key={item.id} className="px-Dims">
+                <div key={item.id} className="px-4 sm:px-6">
                   <CartItem item={item} />
                 </div>
               ))}
@@ -83,43 +91,39 @@ export default function Cart() {
         </div>
 
         <div className="lg:col-span-1">
-          <Card className="sticky top-24">
+          <Card className="sticky top-20 sm:top-24">
             <CardHeader>
-              <CardTitle>Order Summary</CardTitle>
+              <CardTitle className="text-lg sm:text-xl">
+                Order Summary
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex justify-between">
+              <div className="flex justify-between text-sm sm:text-base">
                 <span>Subtotal ({itemCount} items)</span>
                 <span>${total.toFixed(2)}</span>
               </div>
-
-              <div className="flex justify-between">
+              <div className="flex justify-between text-sm sm:text-base">
                 <span>Shipping</span>
                 <span className="text-green-600">Free</span>
               </div>
-
-              <div className="flex justify-between">
+              <div className="flex justify-between text-sm sm:text-base">
                 <span>Tax</span>
                 <span>${(total * 0.08).toFixed(2)}</span>
               </div>
-
               <Separator />
-
-              <div className="flex justify-between text-lg font-bold">
+              <div className="flex justify-between text-base sm:text-lg font-bold">
                 <span>Total</span>
                 <span>${(total * 1.08).toFixed(2)}</span>
               </div>
-
               <Button
                 onClick={handleCheckout}
                 disabled={isCheckingOut}
-                className="w-full"
+                className="w-full text-sm sm:text-base"
                 size="lg"
               >
                 {isCheckingOut ? "Processing..." : "Proceed to Checkout"}
               </Button>
-
-              <div className="text-xs text-muted-foreground text-center">
+              <div className="text-xs sm:text-sm text-muted-foreground text-center">
                 Secure checkout powered by industry-leading encryption
               </div>
             </CardContent>
