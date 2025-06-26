@@ -1,9 +1,13 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-import type { Product, WishlistState } from "@/types"
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { Product, WishlistState } from "@/types";
 
 const initialState: WishlistState = {
   items: [],
   isLoading: false,
+};
+interface WishlistStoragePayload {
+  items: Product[];
+  isLoading: boolean;
 }
 
 const wishlistSlice = createSlice({
@@ -11,27 +15,35 @@ const wishlistSlice = createSlice({
   initialState,
   reducers: {
     setLoading: (state, action: PayloadAction<boolean>) => {
-      state.isLoading = action.payload
+      state.isLoading = action.payload;
     },
     addToWishlist: (state, action: PayloadAction<Product>) => {
       debugger;
-      const exists = state.items.find((item) => item?.id === action?.payload?.id)
+      if (!Array.isArray(state.items)) {
+        state.items = [];
+      }
+      const exists = state.items.find((item) => item?.id === action.payload.id);
       if (!exists) {
-        state.items.push(action.payload)
+        state.items.push({ ...action.payload });
       }
     },
     removeFromWishlist: (state, action: PayloadAction<number>) => {
-      state.items = state.items.filter((item) => item.id !== action.payload)
+      if (!Array.isArray(state.items)) {
+        state.items = [];
+      }
+      state.items = state.items.filter((item) => item.id !== action.payload);
     },
     clearWishlist: (state) => {
-      state.items = []
+      state.items = [];
     },
-    loadWishlistFromStorage: (state, action: PayloadAction<Product[]>) => {
-      state.items = action.payload
-      state.isLoading = false
+    loadWishlistFromStorage: (state, action: PayloadAction<WishlistStoragePayload[]>) => {
+      debugger;
+      const { items = [], isLoading = false } = action.payload || {};
+      state.items = [...items]; 
+      state.isLoading = isLoading;
     },
   },
-})
+});
 
 export const { setLoading, addToWishlist, removeFromWishlist, clearWishlist, loadWishlistFromStorage } = wishlistSlice.actions;
 export default wishlistSlice.reducer;

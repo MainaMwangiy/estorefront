@@ -13,46 +13,59 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useAppDispatch } from "@/lib/hooks";
-import { loginSuccess, loginFailure } from "@/lib/reducers/auth/auth";
+import { registerSuccess, loginFailure } from "@/lib/reducers/auth/auth";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export default function Login() {
+export default function SignUp() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      // Check credentials against stored users
+      // Mock user registration
       const users = JSON.parse(localStorage.getItem("users") || "[]");
-      const user = users.find(
-        (u: any) => u.email === email && u.password === password
-      );
-
-      if (!user) {
-        throw new Error("Invalid email or password");
+      if (users.find((u: any) => u.email === email)) {
+        throw new Error("Email already exists");
       }
 
+      const newUser = {
+        id: Date.now(),
+        name,
+        email,
+        password, // In production, hash this password
+      };
+
+      localStorage.setItem("users", JSON.stringify([...users, newUser]));
+
       dispatch(
-        loginSuccess({
-          id: user.id,
-          email: user.email,
-          name: user.name,
+        registerSuccess({
+          id: newUser.id,
+          email,
+          name,
         })
       );
 
-      toast.success("Logged in successfully!");
-      router.push("/");
+      toast.success("Account created successfully!");
+      router.push("/auth/login");
     } catch (error: any) {
-      dispatch(loginFailure(error.message || "Login failed"));
-      toast.error(error.message || "Login failed");
+      dispatch(loginFailure(error.message || "Registration failed"));
+      toast.error(error.message || "Registration failed");
     } finally {
       setIsLoading(false);
     }
@@ -63,13 +76,25 @@ export default function Login() {
       <div className="max-w-md mx-auto">
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Welcome Back</CardTitle>
+            <CardTitle className="text-2xl">Create an Account</CardTitle>
             <CardDescription>
-              Sign in to your account to continue shopping
+              Join EliteStore and start shopping premium products
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <Label htmlFor="name">Full Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  placeholder="Enter your full name"
+                />
+              </div>
+
               <div>
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -90,23 +115,35 @@ export default function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  placeholder="Enter your password"
+                  placeholder="Create a password"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  placeholder="Confirm your password"
                 />
               </div>
 
               <Button type="submit" disabled={isLoading} className="w-full">
-                {isLoading ? "Signing in..." : "Sign In"}
+                {isLoading ? "Creating account..." : "Create Account"}
               </Button>
             </form>
 
             <div className="text-center mt-4">
               <p className="text-sm text-muted-foreground">
-                {"Don't have an account?"}
+                Already have an account?{" "}
                 <Link
-                  href="/auth/register"
+                  href="/auth/login"
                   className="text-primary hover:underline"
                 >
-                  Sign up
+                  Sign in
                 </Link>
               </p>
             </div>

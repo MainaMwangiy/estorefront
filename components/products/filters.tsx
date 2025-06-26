@@ -63,8 +63,10 @@ export function ProductFiltersComponent({
         <CardTitle className="text-lg">Filters</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div>
-          <Label className="text-sm font-medium mb-3 block">Sort By</Label>
+        <div className="w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto sm:mx-0">
+          <Label className="text-sm font-medium text-gray-700 mb-2 block">
+            Sort By
+          </Label>
           <Select
             value={filters.sortBy || ""}
             onValueChange={(value) =>
@@ -74,14 +76,34 @@ export function ProductFiltersComponent({
               })
             }
           >
-            <SelectTrigger>
+            <SelectTrigger className="w-full flex items-center justify-between px-4 py-2 text-sm bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
               <SelectValue placeholder="Select sorting" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="title">Name A-Z</SelectItem>
-              <SelectItem value="price-asc">Price: Low to High</SelectItem>
-              <SelectItem value="price-desc">Price: High to Low</SelectItem>
-              <SelectItem value="rating">Highest Rated</SelectItem>
+            <SelectContent className="bg-white border border-gray-300 rounded-md shadow-lg overflow-hidden z-50">
+              <SelectItem
+                value="title"
+                className="px-4 py-2 text-sm hover:bg-blue-50 cursor-pointer transition-colors duration-150"
+              >
+                Name A-Z
+              </SelectItem>
+              <SelectItem
+                value="price-asc"
+                className="px-4 py-2 text-sm hover:bg-blue-50 cursor-pointer transition-colors duration-150"
+              >
+                Price: Low to High
+              </SelectItem>
+              <SelectItem
+                value="price-desc"
+                className="px-4 py-2 text-sm hover:bg-blue-50 cursor-pointer transition-colors duration-150"
+              >
+                Price: High to Low
+              </SelectItem>
+              <SelectItem
+                value="rating"
+                className="px-4 py-2 text-sm hover:bg-blue-50 cursor-pointer transition-colors duration-150"
+              >
+                Highest Rated
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
