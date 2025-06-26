@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/shared/Header";
 import { ReduxProvider } from "@/components/providers/provider";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "EStoreFront",
@@ -15,11 +16,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="flex min-h-full flex-col bg-white">
+      <body className="flex min-h-full flex-col bg-white w-full">
         <ReduxProvider>
           <Header />
-          <main className="flex-grow container mx-auto px-4 py-8">
+          <main className="flex-grow w-full px-4 py-0">
             {children}
+            <Toaster
+              position="top-right"
+              duration={3000}
+              richColors
+              expand={true}
+            />
           </main>
         </ReduxProvider>
       </body>
