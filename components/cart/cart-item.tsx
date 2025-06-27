@@ -53,6 +53,7 @@ export function CartItem({ item }: { item: CartItemProps }) {
           className="h-7 w-7 sm:h-8 sm:w-8"
           onClick={() => handleQuantityChange(quantity - 1)}
           disabled={quantity <= 1}
+          data-testid="decrease-quantity"
         >
           <Minus className="h-3 w-3" />
         </Button>
@@ -65,6 +66,7 @@ export function CartItem({ item }: { item: CartItemProps }) {
           }
           className="w-12 sm:w-16 h-7 sm:h-8 text-xs sm:text-sm text-center"
           min="1"
+          data-testid="quantity-input"
         />
 
         <Button
@@ -72,6 +74,7 @@ export function CartItem({ item }: { item: CartItemProps }) {
           size="icon"
           className="h-7 w-7 sm:h-8 sm:w-8"
           onClick={() => handleQuantityChange(quantity + 1)}
+          data-testid="increase-quantity"
         >
           <Plus className="h-3 w-3" />
         </Button>
@@ -86,6 +89,7 @@ export function CartItem({ item }: { item: CartItemProps }) {
           size="sm"
           onClick={handleRemove}
           className="text-red-500 hover:text-red-700 p-1"
+          data-testid="remove-item"
         >
           <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
         </Button>

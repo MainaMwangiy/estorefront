@@ -1,7 +1,7 @@
 import type { Product } from "@/types"
 import axios from "axios"
 
-const API_BASE = "https://fakestoreapi.com"
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "https://fakestoreapi.com";
 
 export async function getProducts(): Promise<Product[]> {
   try {

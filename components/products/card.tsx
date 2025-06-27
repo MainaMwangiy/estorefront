@@ -145,7 +145,7 @@ export const ProductCard = ({
               <Button
                 onClick={handleAddToCart}
                 disabled={isAddingToCart}
-                className="w-full transition-all duration-200 hover:shadow-lg bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-500 text-white"
+                className="w-full h-14.5 transition-all duration-200 hover:shadow-lg bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-500 text-white cursor-pointer text-2xl"
                 size="sm"
               >
                 <motion.div
