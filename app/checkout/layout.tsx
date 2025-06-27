@@ -13,7 +13,7 @@ const stripePromise = loadStripe(
 );
 
 const convertToSubcurrency = (amount: number): number => {
-  return Math.round(amount * 100); // Convert dollars to cents
+  return Math.round(amount * 100);
 };
 
 function CheckoutLayoutContent({
@@ -35,7 +35,7 @@ function CheckoutLayoutContent({
             cart and try again.
           </p>
           <Link href="/cart">
-            <Button>
+            <Button className="flex items-center gap-2 rounded-full border-2 border-blue-600 dark:border-blue-400 bg-white/50 dark:bg-gray-800/50 px-4 py-2 text-blue-600 dark:text-blue-300 font-semibold shadow-sm hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all duration-300 ease-in-out hover:shadow-md">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Cart
             </Button>

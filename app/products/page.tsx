@@ -16,6 +16,7 @@ import {
 } from "@/components/animations/stagger-container";
 import { ProductFiltersComponent } from "@/components/products/filters";
 import { ProductCard } from "@/components/products/card";
+import { ProductsPageSkeleton } from "@/components/skeletons/products-list";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -26,10 +27,11 @@ export default function ProductsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(4);
+  const [itemsPerPage] = useState(8);
   const searchParams = useSearchParams();
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const searchFromUrl = searchParams?.get("search");
@@ -177,10 +179,16 @@ export default function ProductsPage() {
     };
   }, [viewMode, isLoadingMore, loadMoreProducts]);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFilters((prev) => ({ ...prev, search: searchQuery }));
-    setCurrentPage(1);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    debounceRef.current = setTimeout(() => {
+      setFilters((prev) => ({ ...prev, search: value }));
+      setCurrentPage(1);
+    }, 300);
   };
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -190,31 +198,16 @@ export default function ProductsPage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen">
-        <div className="w-full px-4 py-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="animate-pulse">
-                <div className="bg-gray-200 aspect-square rounded-lg mb-4"></div>
-                <div className="bg-gray-200 h-4 rounded mb-2"></div>
-                <div className="bg-gray-200 h-4 rounded w-2/3 mb-2"></div>
-                <div className="bg-gray-200 h-8 rounded w-full"></div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
+    return <ProductsPageSkeleton />;
   }
 
   return (
     <div className="min-h-screen">
       {/* Products Section */}
-      <section className="w-full px-4 py-8">
+      <section className="w-full px-4 py-1">
         <FadeIn>
-          <div className="mb-6">
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-6">
+          <div className="mb-2">
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-1">
               <div>
                 <h2 className="text-xl sm:text-2xl font-bold mb-2">
                   Our Products
@@ -223,21 +216,16 @@ export default function ProductsPage() {
                   {filteredProducts.length} products found
                 </p>
               </div>
-              <form
-                onSubmit={handleSearch}
-                className="flex-1 max-w-md w-full sm:w-auto"
-              >
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                  <Input
-                    type="search"
-                    placeholder="Search products..."
-                    className="pl-10 w-full text-sm sm:text-base transition-all duration-200 focus:ring-2 focus:ring-blue-600/20"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-              </form>
+              <div className="relative flex-1 max-w-md w-full">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <Input
+                  type="search"
+                  placeholder="Search products..."
+                  className="pl-10 pr-10 w-full text-sm sm:text-base transition-all duration-200 focus:ring-2 focus:ring-blue-600/20"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                />
+              </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
               <span className="text-xs sm:text-sm text-muted-foreground">
@@ -321,7 +309,11 @@ export default function ProductsPage() {
                 >
                   {displayedProducts.map((product) => (
                     <StaggerItem key={product.id}>
-                      <ProductCard product={product} index={0} />
+                      <ProductCard
+                        product={product}
+                        index={0}
+                        viewMode={viewMode}
+                      />
                     </StaggerItem>
                   ))}
                 </StaggerContainer>

@@ -16,7 +16,11 @@ import { Button } from "../ui/button";
 import { CartAnimation } from "../animations/cart-animation";
 import { ProductCardProps } from "@/types";
 
-export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
+export const ProductCard = ({
+  product,
+  index = 0,
+  viewMode = "grid",
+}: ProductCardProps) => {
   const dispatch = useAppDispatch();
   const wishlistItems = useAppSelector((state) => state.wishlist.items || []);
   const isInWishlist = Array.isArray(wishlistItems)
@@ -37,7 +41,6 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
   };
 
   const handleWishlistToggle = () => {
-    debugger;
     if (isInWishlist) {
       dispatch(removeFromWishlist(product.id));
       toast.success("Removed from wishlist");
@@ -56,7 +59,11 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
         whileHover={{ y: -5 }}
         className="h-full"
       >
-        <Card className="group overflow-hidden transition-all duration-300 hover:shadow-xl border-0 shadow-md h-full flex flex-col">
+        <Card
+          className={`group overflow-hidden transition-all duration-300 hover:shadow-xl border-0 shadow-md ${
+            viewMode === "grid" ? "h-[468px]" : "h-[698px]"
+          } flex flex-col`}
+        >
           <div className="relative aspect-square overflow-hidden">
             <Link href={`/products/${product.id}`}>
               <Image
@@ -64,7 +71,11 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
                 alt={product.title}
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-110"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                sizes={`${
+                  viewMode === "grid"
+                    ? "(min-width: 640px) 50vw, (min-width: 768px) 33vw, (min-width: 1024px) 25vw, 100vw"
+                    : "(min-width: 640px) 100vw, 100vw"
+                } `}
               />
             </Link>
 
@@ -95,9 +106,9 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
             )}
           </div>
 
-          <CardContent className="p-4 flex-1 flex flex-col">
+          <CardContent className="p-2 pt-0 flex-1 flex flex-col">
             <Link href={`/products/${product.id}`}>
-              <h3 className="font-semibold text-sm line-clamp-2 mb-2 hover:text-primary transition-colors min-h-[2.5rem]">
+              <h3 className="font-semibold text-sm line-clamp-2 mb-1 hover:text-primary transition-colors min-h-[2.5rem]">
                 {product.title}
               </h3>
             </Link>
@@ -120,8 +131,8 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
               </span>
             </div>
 
-            <div className="mt-auto">
-              <div className="flex items-center justify-between mb-3">
+            <div className="mt-0">
+              <div className="flex items-center justify-between mb-0">
                 <span className="text-xl font-bold text-primary">
                   ${product.price.toFixed(2)}
                 </span>
@@ -129,7 +140,7 @@ export const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
             </div>
           </CardContent>
 
-          <CardFooter className="p-4 pt-0">
+          <CardFooter className="pr-2 pl-2 pt-0 pb-0 mt-0 mb-0">
             <motion.div className="w-full" whileTap={{ scale: 0.98 }}>
               <Button
                 onClick={handleAddToCart}
