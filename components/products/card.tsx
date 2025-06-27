@@ -41,7 +41,6 @@ export const ProductCard = ({
   };
 
   const handleWishlistToggle = () => {
-    debugger;
     if (isInWishlist) {
       dispatch(removeFromWishlist(product.id));
       toast.success("Removed from wishlist");

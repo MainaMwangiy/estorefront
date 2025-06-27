@@ -14,7 +14,6 @@ export function CartItem({ item }: { item: CartItemProps }) {
   const [quantity, setQuantity] = useState(item.quantity);
 
   const handleQuantityChange = (newQuantity: number) => {
-    console.log("Updating quantity for item:", item.id, "to", newQuantity);
     if (newQuantity < 1) return;
     setQuantity(newQuantity);
     dispatch(updateQuantity({ id: item.id, quantity: newQuantity }));
