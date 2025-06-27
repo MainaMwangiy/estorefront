@@ -31,7 +31,6 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      // Check credentials against stored users
       const users = JSON.parse(localStorage.getItem("users") || "[]");
       const user = users.find(
         (u: User) => u.email === email && u.password === password

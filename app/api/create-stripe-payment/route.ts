@@ -8,7 +8,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    console.log("Request body:", body); // Debug log
     const { amount } = body;
 
     if (!amount || amount <= 0) {
@@ -24,8 +23,6 @@ export async function POST(request: NextRequest) {
       currency: "usd",
       automatic_payment_methods: { enabled: true },
     });
-
-    console.log("Payment intent created:", paymentIntent.id); // Debug log
     return NextResponse.json({ clientSecret: paymentIntent.client_secret });
   } catch (error: unknown) {
     console.error("Internal Error:", error);

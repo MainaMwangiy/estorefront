@@ -39,7 +39,6 @@ export default function SignUp() {
     setIsLoading(true);
 
     try {
-      // Mock user registration
       const users = JSON.parse(localStorage.getItem("users") || "[]");
       if (users.find((u: User) => u.email === email)) {
         throw new Error("Email already exists");
@@ -49,7 +48,7 @@ export default function SignUp() {
         id: Date.now(),
         name,
         email,
-        password, // In production, hash this password
+        password,
       };
 
       localStorage.setItem("users", JSON.stringify([...users, newUser]));

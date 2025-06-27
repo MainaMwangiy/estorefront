@@ -18,7 +18,6 @@ const wishlistSlice = createSlice({
       state.isLoading = action.payload;
     },
     addToWishlist: (state, action: PayloadAction<Product>) => {
-      debugger;
       if (!Array.isArray(state.items)) {
         state.items = [];
       }
@@ -37,7 +36,6 @@ const wishlistSlice = createSlice({
       state.items = [];
     },
     loadWishlistFromStorage: (state, action: PayloadAction<WishlistStoragePayload>) => {
-      debugger;
       const { items = [], isLoading = false } = action.payload || {};
       state.items = [...items]; 
       state.isLoading = isLoading;
