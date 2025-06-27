@@ -24,7 +24,6 @@ export const metadata: Metadata = {
     "fashion",
     "home goods",
   ],
-  manifest: "/manifest.json",
 };
 
 export const viewport: Viewport = {
