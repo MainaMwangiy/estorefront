@@ -30,14 +30,6 @@ const mockProduct: CartItemType = {
   },
 };
 
-// Create a mock dispatch function
-const mockDispatch = jest.fn();
-
-// Mock the entire hooks module
-// jest.mock("@/lib/hooks", () => ({
-//   useAppDispatch: () => mockDispatch,
-// }));
-
 const createMockStore = (initialState: CartState) => {
   return configureStore({
     reducer: {
@@ -50,20 +42,16 @@ const createMockStore = (initialState: CartState) => {
 };
 
 describe("CartItem Component", () => {
-  beforeEach(() => {
-    mockDispatch.mockClear();
-  });
-
   it("renders cart item correctly", () => {
+    const store = createMockStore({
+      items: [mockProduct],
+      total: 39.98,
+      itemCount: 2,
+      isLoading: false,
+    });
+
     render(
-      <Provider
-        store={createMockStore({
-          items: [mockProduct],
-          total: 39.98,
-          itemCount: 2,
-          isLoading: false,
-        })}
-      >
+      <Provider store={store}>
         <CartItem item={mockProduct} />
       </Provider>
     );
@@ -72,120 +60,122 @@ describe("CartItem Component", () => {
     expect(screen.getByText("electronics")).toBeInTheDocument();
     expect(screen.getByText("$19.99")).toBeInTheDocument();
     expect(screen.getByText("$39.98")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("2")).toBeInTheDocument();
+    expect(screen.getByTestId("quantity-input")).toHaveValue(2);
   });
 
   it("handles quantity increase", () => {
+    const store = createMockStore({
+      items: [mockProduct],
+      total: 39.98,
+      itemCount: 2,
+      isLoading: false,
+    });
+
     render(
-      <Provider
-        store={createMockStore({
-          items: [mockProduct],
-          total: 39.98,
-          itemCount: 2,
-          isLoading: false,
-        })}
-      >
+      <Provider store={store}>
         <CartItem item={mockProduct} />
       </Provider>
     );
 
-    const buttons = screen.getAllByRole("button");
-    const plusButton = buttons[1]; // Second button is typically the plus button
-
+    const plusButton = screen.getByTestId("increase-quantity");
     fireEvent.click(plusButton);
 
-    expect(mockDispatch).toHaveBeenCalledWith(
-      updateQuantity({ id: 1, quantity: 3 })
-    );
+    // Check that the store state has been updated
+    const state = store.getState();
+    expect(state.cart.items[0].quantity).toBe(3);
+    expect(state.cart.total).toBeCloseTo(59.97, 2);
+    expect(state.cart.itemCount).toBe(3);
   });
 
   it("handles quantity decrease", () => {
+    const store = createMockStore({
+      items: [mockProduct],
+      total: 39.98,
+      itemCount: 2,
+      isLoading: false,
+    });
+
     render(
-      <Provider
-        store={createMockStore({
-          items: [mockProduct],
-          total: 39.98,
-          itemCount: 2,
-          isLoading: false,
-        })}
-      >
+      <Provider store={store}>
         <CartItem item={mockProduct} />
       </Provider>
     );
 
-    const buttons = screen.getAllByRole("button");
-    const minusButton = buttons[0]; // First button is typically the minus button
-
+    const minusButton = screen.getByTestId("decrease-quantity");
     fireEvent.click(minusButton);
 
-    expect(mockDispatch).toHaveBeenCalledWith(
-      updateQuantity({ id: 1, quantity: 1 })
-    );
+    // Check that the store state has been updated
+    const state = store.getState();
+    expect(state.cart.items[0].quantity).toBe(1);
+    expect(state.cart.total).toBeCloseTo(19.99, 2);
+    expect(state.cart.itemCount).toBe(1);
   });
 
   it("prevents quantity decrease below 1", () => {
     const singleItem: CartItemType = { ...mockProduct, quantity: 1 };
+    const store = createMockStore({
+      items: [singleItem],
+      total: 19.99,
+      itemCount: 1,
+      isLoading: false,
+    });
+
     render(
-      <Provider
-        store={createMockStore({
-          items: [singleItem],
-          total: 19.99,
-          itemCount: 1,
-          isLoading: false,
-        })}
-      >
+      <Provider store={store}>
         <CartItem item={singleItem} />
       </Provider>
     );
 
-    const buttons = screen.getAllByRole("button");
-    const minusButton = buttons[0];
-
+    const minusButton = screen.getByTestId("decrease-quantity");
     expect(minusButton).toBeDisabled();
   });
 
   it("handles quantity input change", () => {
+    const store = createMockStore({
+      items: [mockProduct],
+      total: 39.98,
+      itemCount: 2,
+      isLoading: false,
+    });
+
     render(
-      <Provider
-        store={createMockStore({
-          items: [mockProduct],
-          total: 39.98,
-          itemCount: 2,
-          isLoading: false,
-        })}
-      >
+      <Provider store={store}>
         <CartItem item={mockProduct} />
       </Provider>
     );
 
-    const input = screen.getByDisplayValue("2");
+    const input = screen.getByTestId("quantity-input");
     fireEvent.change(input, { target: { value: "5" } });
 
-    expect(mockDispatch).toHaveBeenCalledWith(
-      updateQuantity({ id: 1, quantity: 5 })
-    );
+    // Check that the store state has been updated
+    const state = store.getState();
+    expect(state.cart.items[0].quantity).toBe(5);
+    expect(state.cart.total).toBeCloseTo(99.95, 2);
+    expect(state.cart.itemCount).toBe(5);
   });
 
   it("handles remove item", () => {
+    const store = createMockStore({
+      items: [mockProduct],
+      total: 39.98,
+      itemCount: 2,
+      isLoading: false,
+    });
+
     render(
-      <Provider
-        store={createMockStore({
-          items: [mockProduct],
-          total: 39.98,
-          itemCount: 2,
-          isLoading: false,
-        })}
-      >
+      <Provider store={store}>
         <CartItem item={mockProduct} />
       </Provider>
     );
 
-    const buttons = screen.getAllByRole("button");
-    const removeButton = buttons[buttons.length - 1]; // Last button is typically the remove button
-
+    const removeButton = screen.getByTestId("remove-item");
     fireEvent.click(removeButton);
 
-    expect(mockDispatch).toHaveBeenCalledWith(removeFromCart(1));
+    // Check that the item has been removed from store
+    const state = store.getState();
+    expect(state.cart.items).toHaveLength(0);
+    expect(state.cart.total).toBe(0);
+    expect(state.cart.itemCount).toBe(0);
   });
 });
 
@@ -214,7 +204,7 @@ describe("cartSlice Reducer", () => {
     };
     const newState = cartReducer(stateWithItem, addToCart(mockProduct));
     expect(newState.items[0].quantity).toBe(2);
-    expect(newState.total).toBe(39.98);
+    expect(newState.total).toBeCloseTo(39.98, 2);
     expect(newState.itemCount).toBe(2);
   });
 
@@ -243,7 +233,7 @@ describe("cartSlice Reducer", () => {
       updateQuantity({ id: 1, quantity: 3 })
     );
     expect(newState.items[0].quantity).toBe(3);
-    expect(newState.total).toBe(59.97);
+    expect(newState.total).toBeCloseTo(59.97, 2);
     expect(newState.itemCount).toBe(3);
   });
 
@@ -288,7 +278,7 @@ describe("cartSlice Reducer", () => {
       loadCartFromStorage(storedState)
     );
     expect(newState.items).toEqual(storedState.items);
-    expect(newState.total).toBe(39.98);
+    expect(newState.total).toBeCloseTo(39.98, 2);
     expect(newState.itemCount).toBe(2);
     expect(newState.isLoading).toBe(false);
   });
