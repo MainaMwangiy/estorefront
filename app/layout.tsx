@@ -71,7 +71,7 @@ export default function RootLayout({
           <main className="flex-grow w-full px-4 py-0">
             {children}
             <Toaster
-              position="top-right"
+              position="top-center"
               duration={3000}
               richColors
               expand={true}
