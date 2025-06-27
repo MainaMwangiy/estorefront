@@ -33,13 +33,6 @@ export interface ProductSearchParams {
   page?: string;
 }
 
-export interface ProductFilters {
-  category?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  search?: string;
-  sortBy?: "price-asc" | "price-desc" | "rating" | "title" | "newest";
-}
 
 export interface ProductDetailClientProps {
   product: Product;
