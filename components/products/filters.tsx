@@ -45,11 +45,10 @@ export function ProductFiltersComponent({
   };
 
   const handleCategoryChange = (category: string, checked: boolean) => {
-    if (checked) {
-      onFiltersChange({ ...filters, category });
-    } else {
-      onFiltersChange({ ...filters, category: undefined });
-    }
+    onFiltersChange({
+      ...filters,
+      category: checked ? category : undefined,
+    });
   };
 
   const clearFilters = () => {
